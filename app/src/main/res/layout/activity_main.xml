@@ -17,6 +17,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:src="@mipmap/toolbox"
-        app:backgroundTint="#ffffff" />
+        app:backgroundTint="#ffffff"
+        android:scaleType="center"
+        android:onClick="toolboxTap" />
 
 </android.support.design.widget.CoordinatorLayout>
