@@ -9,6 +9,12 @@
     android:background="#a8a8a8">
 
     <include layout="@layout/content_main" />
+    <ImageView
+        android:src="@drawable/lockpick1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:longClickable="true"
+        android:id="@+id/lockpick" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
