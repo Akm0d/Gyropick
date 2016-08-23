@@ -1,17 +1,17 @@
 package com.example.tyler.lockpick;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import static java.lang.Math.abs;
 
 public class MainActivity extends AppCompatActivity {
     private static final boolean TOOLBOX_CLOSED = false;
@@ -25,16 +25,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViewById(R.id.lockpick).setOnTouchListener(new View.OnTouchListener(){
+            float x_offset = 0;
+            float y_offset = 0;
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                switch (event.getAction()){
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
                     case MotionEvent.ACTION_DOWN:
-                        start.set(event.getX(), event.getY());
+                        x_offset = event.getRawX() - view.getX();
+                        y_offset = event.getRawY() - view.getY();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        break;
+                    case MotionEvent.ACTION_POINTER_DOWN:
+                        break;
+                    case MotionEvent.ACTION_POINTER_UP:
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        view.animate().translationXBy(event.getX() - start.x).translationYBy(event.getY() - start.y);
-                        break;
-                    default:
+                        view.setX (event.getRawX() - x_offset);
+                        view.setY (event.getRawY() - y_offset);
+
                         break;
                 }
                 return true;
