@@ -1,9 +1,7 @@
-package com.example.tyler.lockpick.Objects;
+package com.tyler.lockpick.Objects;
 
 import android.view.MotionEvent;
 import android.view.View;
-
-import java.util.ArrayList;
 
 /**
  * Created by tyler on 8/27/16.

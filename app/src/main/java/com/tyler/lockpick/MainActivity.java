@@ -1,4 +1,4 @@
-package com.example.tyler.lockpick;
+package com.tyler.lockpick;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -10,8 +10,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.tyler.lockpick.Objects.Lock;
-import com.example.tyler.lockpick.Objects.LockPick;
+import com.tyler.lockpick.Objects.Lock;
+import com.tyler.lockpick.Objects.LockPick;
+import com.tyler.lockpick.R;
 
 public class MainActivity extends AppCompatActivity {
     private Toast flat_message;

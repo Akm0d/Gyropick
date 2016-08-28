@@ -1,4 +1,4 @@
-package com.example.tyler.lockpick;
+package com.tyler.lockpick;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.example.tyler.lockpick.Objects;
+package com.tyler.lockpick.Objects;
 
 import android.graphics.Point;
 import android.hardware.Sensor;
