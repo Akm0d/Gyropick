@@ -1,28 +1,44 @@
-package com.example.tyler.lockpick;
+package com.example.tyler.lockpick.Objects;
 
+import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.support.design.widget.FloatingActionButton;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
+
+import static java.lang.Math.abs;
 
 /**
  * Created by tyler on 8/27/16.
  */
 public class Lock {
-    private final ImageView lock_background;
-    public lockRotation lockRotation = new lockRotation();
     private final SensorManager mSensorManager;
+    private final ImageView lock_background;
+    private final FloatingActionButton toolbox;
     private ArrayList<Pins> pins = new ArrayList<>();
+    private Point center = new Point();
+    public lockRotation lockRotation = new lockRotation();
 
-    public Lock(SensorManager mSensorManager,ImageView lock_background){
-        this.lock_background = lock_background;
+    public Lock(SensorManager mSensorManager, ImageView lock_background, Point center, FloatingActionButton toolbox){
         this.mSensorManager = mSensorManager;
+        this.lock_background = lock_background;
+        this.toolbox = toolbox;
+        this.center.x = center.x/2;
+        this.center.y = center.y/2;
     }
 
-    public void rotateLock(float roll,float tilt){
+    public void rotateLock(float tilt){
+        //dimensions = 420 600
+        //center = (360,640)
+        lock_background.setX(center.x - lock_background.getMeasuredWidth());
+        lock_background.setY(center.y - lock_background.getMeasuredHeight());
+        lock_background.setPivotX(center.x - lock_background.getMeasuredWidth()/2);
+        lock_background.setPivotY(center.y - lock_background.getMeasuredHeight()/2);
+        lock_background.setRotation(tilt);
         /*
         if (abs(roll) < 20 && !toolbox_open){
             flat_message.show();
@@ -30,7 +46,6 @@ public class Lock {
             flat_message.cancel();
         }
         */
-
     }
 
     public class lockRotation implements SensorEventListener {
@@ -50,7 +65,7 @@ public class Lock {
             // You must implement this callback in your code.
         }
 
-        protected void start() {
+        public void start() {
             // Get updates from the accelerometer and magnetometer at a constant rate.
             // To make batch operations more efficient and reduce power consumption,
             // provide support for delaying updates to the application.
@@ -59,12 +74,12 @@ public class Lock {
             // the application receives an update before the system checks the sensor
             // readings again.
             mSensorManager.registerListener(this,mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                    SensorManager.SENSOR_DELAY_GAME,SensorManager.SENSOR_DELAY_UI);
+                    SensorManager.SENSOR_DELAY_NORMAL,SensorManager.SENSOR_DELAY_UI);
             mSensorManager.registerListener(this,mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
-                    SensorManager.SENSOR_DELAY_GAME,SensorManager.SENSOR_DELAY_UI);
+                    SensorManager.SENSOR_DELAY_NORMAL,SensorManager.SENSOR_DELAY_UI);
         }
 
-        protected void stop() {
+        public void stop() {
             // Don't receive any more updates from either sensor.
             mSensorManager.unregisterListener(this);
         }
@@ -100,10 +115,22 @@ public class Lock {
             float tilt = mOrientationAngles[1]*180/(float)Math.PI;
             float roll = mOrientationAngles[2]*180/(float)Math.PI;
 
-            // Rotate the lock based on the rotation data
-            System.out.println(tilt);
 
-            //rotateLock(roll,tilt);
+            // Show or hide the toolbox based on device orientation
+            // Rotate the lock based on the rotation data
+            if (tilt < 0) tilt = 360 + tilt;
+            tilt = abs(360 - tilt);
+            if (toolbox != null) {
+                if (250 < tilt && tilt < 300 || 65 < tilt && tilt < 90 || abs(roll) < 40) {
+                    toolbox.show();
+                    toolbox.setClickable(true);
+                } else {
+                    //System.out.println(tilt);
+                    toolbox.hide();
+                    toolbox.setClickable(false);
+                }
+            }
+            rotateLock(tilt);
         }
     }
 }

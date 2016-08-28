@@ -1,23 +1,29 @@
 package com.example.tyler.lockpick;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.tyler.lockpick.Objects.Lock;
+import com.example.tyler.lockpick.Objects.LockPick;
+
 public class MainActivity extends AppCompatActivity {
     private Toast flat_message;
+    public static FloatingActionButton toolbox;
     private static final boolean TOOLBOX_CLOSED = false;
     private static final boolean TOOLBOX_OPEN = true;
-    private SensorManager mSensorManager;
     private boolean toolbox_open;
     private Lock lock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        toolbox = (FloatingActionButton) findViewById(R.id.fab);
         toolbox_open = TOOLBOX_CLOSED;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -26,10 +32,12 @@ public class MainActivity extends AppCompatActivity {
         LockPick pick = new LockPick(findViewById(R.id.lockpick));
 
         // Start Sensor Manager
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        SensorManager mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         flat_message = Toast.makeText(this,"Orient your device horizontally",Toast.LENGTH_SHORT);
         // TODO: Use a lock background instead of a pink line
-        lock = new Lock(mSensorManager, (ImageView) findViewById(R.id.pink_line));
+        Point lock_center = new Point();
+        getWindowManager().getDefaultDisplay().getSize(lock_center);
+        lock = new Lock(mSensorManager, (ImageView) findViewById(R.id.pink_line),lock_center,(FloatingActionButton)findViewById(R.id.fab));
     }
 
     @Override
@@ -74,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
             toolbox_open = TOOLBOX_CLOSED;
         }
     }
-
 
 }
 
