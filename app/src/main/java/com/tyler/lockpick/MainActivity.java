@@ -2,6 +2,7 @@ package com.tyler.lockpick;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -33,6 +34,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Start Sensor Manager
         SensorManager mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) == null){
+            Toast.makeText(this,"No accelerometer detected, this may affect performance",Toast.LENGTH_LONG);
+        }
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) == null) {
+            Toast.makeText(this,"No magnetic field detected, this may affect performance",Toast.LENGTH_LONG);
+        }
         flat_message = Toast.makeText(this,"Orient your device horizontally",Toast.LENGTH_SHORT);
         // TODO: Use a lock background instead of a pink line
         Point lock_center = new Point();
