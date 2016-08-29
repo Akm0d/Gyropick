@@ -1,6 +1,7 @@
 package com.tyler.lockpick.Objects;
 
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -9,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.Math.abs;
 
@@ -25,6 +27,7 @@ public class Lock {
     private ArrayList<Pins> pins = new ArrayList<>();
     private Point center = new Point();
     public lockRotation lockRotation = new lockRotation();
+    private Rect lock_rect = new Rect();
 
     public Lock(SensorManager mSensorManager, ImageView lock_background, Point center, FloatingActionButton toolbox){
         this.mSensorManager = mSensorManager;
@@ -40,8 +43,8 @@ public class Lock {
 
         float x_center = center.x;
         float y_center = center.y - offset;
-        float x_pivot = lock_width / 2;
-        float y_pivot = lock_height / 2;
+        float x_pivot = lock_width;
+        float y_pivot = lock_height;
 
         lock_background.setX(x_center);
         lock_background.setY(y_center);
@@ -57,9 +60,6 @@ public class Lock {
         private final float[] mRotationMatrix = new float[9];
         private final float[] mOrientationAngles = new float[3];
 
-        lockRotation(){
-        }
-
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
             // Do something here if sensor accuracy changes.
@@ -74,14 +74,10 @@ public class Lock {
             // In this example, the sensor reporting delay is small enough such that
             // the application receives an update before the system checks the sensor
             // readings again.
-            if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) == null){
-                mSensorManager.registerListener(this,mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                        SensorManager.SENSOR_DELAY_NORMAL,SensorManager.SENSOR_DELAY_UI);
-            }
-            if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) == null) {
-                mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
-                        SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
-            }
+            mSensorManager.registerListener(this,mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                    SensorManager.SENSOR_DELAY_NORMAL,SensorManager.SENSOR_DELAY_UI);
+            mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+                    SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
         }
 
         public void stop() {
@@ -137,5 +133,15 @@ public class Lock {
             }
             rotateLock(tilt);
         }
+    }
+
+    /**
+     * Get all images that need to be used for collision detection
+     * This one doesn't include pins
+     */
+    public List<ImageView> getImages(){
+        List<ImageView> images = new ArrayList<>();
+        images.add(lock_background);
+        return images;
     }
 }

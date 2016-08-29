@@ -2,12 +2,16 @@ package com.tyler.lockpick.Objects;
 
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 
 /**
  * Created by tyler on 8/27/16.
  */
 public class LockPick {
+    ImageView lockpick;
+
     public LockPick(View lockpick) {
+        this.lockpick = (ImageView) lockpick;
         //TODO: Map out the entire visible lockpick
         //TODO: Detect collisions with pins and edges
 
@@ -37,5 +41,9 @@ public class LockPick {
             }
         });
 
+    }
+
+    public ImageView getImage(){
+        return lockpick;
     }
 }

@@ -2,25 +2,37 @@ package com.tyler.lockpick;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.tyler.lockpick.Global.Settings;
 import com.tyler.lockpick.Objects.Lock;
 import com.tyler.lockpick.Objects.LockPick;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
+    private Handler update = new Handler();
+    private final int update_delay = 1000/60;// miliseconds
     private Toast flat_message;
     public static FloatingActionButton toolbox;
     private static final boolean TOOLBOX_CLOSED = false;
     private static final boolean TOOLBOX_OPEN = true;
     private boolean toolbox_open;
+    private LockPick pick;
     private Lock lock;
+    private Vibrator mVibration;
+    private Settings settings = Settings.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // TODO change lockpick if one is selected from the toolbox
-        LockPick pick = new LockPick(findViewById(R.id.lockpick));
+        pick = new LockPick(findViewById(R.id.lockpick));
 
         // Start Sensor Manager
         SensorManager mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -45,6 +57,16 @@ public class MainActivity extends AppCompatActivity {
         Point lock_center = new Point();
         getWindowManager().getDefaultDisplay().getRealSize(lock_center);
         lock = new Lock(mSensorManager, (ImageView) findViewById(R.id.pink_line),lock_center,(FloatingActionButton)findViewById(R.id.fab));
+
+        mVibration = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+
+        // Do something every 1/60th of a second
+        update.postDelayed(new Runnable(){
+            public void run(){
+                Update();
+                update.postDelayed(this,update_delay);
+            }
+        }, update_delay);
     }
 
     @Override
@@ -81,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Close the toolbox if the background is tapped
-     * @param view
+     * @param view the background image
      */
     public void backgroundTap(View view) {
         if (toolbox_open){
@@ -90,5 +112,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Tasks that will run every 1/60th of a second
+     */
+    private void Update() {
+        // Finds collisions between all images in lock
+        List<ImageView> hard_collisions = lock.getImages();
+        Rect pick_rect = new Rect();
+        pick.getImage().getHitRect(pick_rect);
+
+        // Detect collisions
+        for (ImageView image:hard_collisions) {
+            Rect hit_rect = new Rect();
+            image.getHitRect(hit_rect);
+            if (pick_rect.intersect(hit_rect))
+                mVibration.vibrate(update_delay);
+        }
+    }
 }
 
