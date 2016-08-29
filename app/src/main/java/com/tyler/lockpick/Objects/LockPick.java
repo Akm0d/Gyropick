@@ -9,6 +9,7 @@ import android.view.View;
 public class LockPick {
     public LockPick(View lockpick) {
         //TODO: Map out the entire visible lockpick
+        //TODO: Detect collisions with pins and edges
 
         // Lockpick movement
         lockpick.setOnTouchListener(new View.OnTouchListener(){
@@ -30,7 +31,6 @@ public class LockPick {
                     case MotionEvent.ACTION_MOVE:
                         view.setX (event.getRawX() - x_offset);
                         view.setY (event.getRawY() - y_offset);
-
                         break;
                 }
                 return true;

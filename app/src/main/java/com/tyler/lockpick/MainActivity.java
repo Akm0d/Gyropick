@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.tyler.lockpick.Objects.Lock;
 import com.tyler.lockpick.Objects.LockPick;
-import com.tyler.lockpick.R;
 
 public class MainActivity extends AppCompatActivity {
     private Toast flat_message;
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         flat_message = Toast.makeText(this,"Orient your device horizontally",Toast.LENGTH_SHORT);
         // TODO: Use a lock background instead of a pink line
         Point lock_center = new Point();
-        getWindowManager().getDefaultDisplay().getSize(lock_center);
+        getWindowManager().getDefaultDisplay().getRealSize(lock_center);
         lock = new Lock(mSensorManager, (ImageView) findViewById(R.id.pink_line),lock_center,(FloatingActionButton)findViewById(R.id.fab));
     }
 

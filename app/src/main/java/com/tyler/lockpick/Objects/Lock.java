@@ -19,6 +19,9 @@ public class Lock {
     private final SensorManager mSensorManager;
     private final ImageView lock_background;
     private final FloatingActionButton toolbox;
+    private final int lock_width = 10;
+    private final int lock_height = 100;
+
     private ArrayList<Pins> pins = new ArrayList<>();
     private Point center = new Point();
     public lockRotation lockRotation = new lockRotation();
@@ -32,20 +35,18 @@ public class Lock {
     }
 
     public void rotateLock(float tilt){
-        //dimensions = 420 600
-        //center = (360,640)
-        lock_background.setX(center.x - lock_background.getMeasuredWidth());
-        lock_background.setY(center.y - lock_background.getMeasuredHeight());
-        lock_background.setPivotX(center.x - lock_background.getMeasuredWidth()/2);
-        lock_background.setPivotY(center.y - lock_background.getMeasuredHeight()/2);
         lock_background.setRotation(tilt);
-        /*
-        if (abs(roll) < 20 && !toolbox_open){
-            flat_message.show();
-        } else {
-            flat_message.cancel();
-        }
-        */
+        float offset = 2 * center.x / 3;
+
+        float x_center = center.x;
+        float y_center = center.y - offset;
+        float x_pivot = lock_width / 2;
+        float y_pivot = lock_height / 2;
+
+        lock_background.setX(x_center);
+        lock_background.setY(y_center);
+        lock_background.setPivotX(x_pivot);
+        lock_background.setPivotY(y_pivot);
     }
 
     public class lockRotation implements SensorEventListener {
