@@ -20,7 +20,6 @@ import static java.lang.Math.abs;
 public class Lock {
     private final SensorManager mSensorManager;
     private final ImageView lock_background;
-    private final FloatingActionButton toolbox;
     private final int lock_width = 10;
     private final int lock_height = 100;
 
@@ -28,11 +27,12 @@ public class Lock {
     private Point center = new Point();
     public lockRotation lockRotation = new lockRotation();
     private Rect lock_rect = new Rect();
+    public boolean toolbox_on;
 
-    public Lock(SensorManager mSensorManager, ImageView lock_background, Point center, FloatingActionButton toolbox){
+    public Lock(SensorManager mSensorManager, ImageView lock_background, Point center){
+        toolbox_on = false;
         this.mSensorManager = mSensorManager;
         this.lock_background = lock_background;
-        this.toolbox = toolbox;
         this.center.x = center.x/2;
         this.center.y = center.y/2;
     }
@@ -121,15 +121,11 @@ public class Lock {
             // Rotate the lock based on the rotation data
             if (tilt < 0) tilt = 360 + tilt;
             tilt = abs(360 - tilt);
-            if (toolbox != null) {
-                if (250 < tilt && tilt < 300 || 65 < tilt && tilt < 90 || abs(roll) < 40) {
-                    toolbox.show();
-                    toolbox.setClickable(true);
-                } else {
-                    //System.out.println(tilt);
-                    toolbox.hide();
-                    toolbox.setClickable(false);
-                }
+            if (250 < tilt && tilt < 300 || 65 < tilt && tilt < 90 || abs(roll) < 40) {
+                toolbox_on = true;
+            } else {
+                //System.out.println(tilt);
+                toolbox_on = false;
             }
             rotateLock(tilt);
         }

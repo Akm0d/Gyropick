@@ -8,32 +8,60 @@
     tools:context="com.tyler.lockpick.MainActivity"
     android:background="#a8a8a8"
     android:onClick="backgroundTap">
-
     <include layout="@layout/content_main" />
-    <ImageView
-        android:src="@drawable/lockpick1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:longClickable="true"
-        android:id="@+id/lockpick"
-        android:contentDescription="@string/lockpick" />
 
-    <ImageView
-        android:src="@drawable/pink"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/pink_line"
-        android:contentDescription="@string/line"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@mipmap/toolbox"
-        app:backgroundTint="#638d99"
-        android:scaleType="center"
-        android:onClick="toolboxTap" />
+        <ImageView
+            android:src="@drawable/lockpick1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:longClickable="true"
+            android:id="@+id/lockpick"
+            android:contentDescription="@string/lockpick" />
+
+        <ImageView
+            android:src="@drawable/pink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pink_line"
+            android:contentDescription="@string/line"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:src="@mipmap/toolbox"
+            app:backgroundTint="#638d99"
+            android:scaleType="center"
+            android:onClick="toolboxTap"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_marginBottom="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:visibility="invisible"
+            android:layout_gravity="right|bottom"
+            android:src="@android:drawable/ic_menu_preferences"
+            android:scaleType="center"
+            android:onClick="onSettingsTap"
+            app:backgroundTint="#7c7c7c"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_above="@+id/fab"
+            android:layout_alignStart="@+id/fab"
+            android:layout_marginBottom="20dp" />
+    </RelativeLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>

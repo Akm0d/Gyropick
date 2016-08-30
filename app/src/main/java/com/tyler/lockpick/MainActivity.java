@@ -1,6 +1,7 @@
 package com.tyler.lockpick;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Sensor;
@@ -25,19 +26,16 @@ public class MainActivity extends AppCompatActivity {
     private final int update_delay = 1000/60;// miliseconds
     private Toast flat_message;
     public static FloatingActionButton toolbox;
+    private Settings settings = Settings.getInstance();
     private static final boolean TOOLBOX_CLOSED = false;
     private static final boolean TOOLBOX_OPEN = true;
     private boolean toolbox_open;
     private LockPick pick;
     private Lock lock;
     private Vibrator mVibration;
-    private Settings settings = Settings.getInstance();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        toolbox = (FloatingActionButton) findViewById(R.id.fab);
-        toolbox_open = TOOLBOX_CLOSED;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -56,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         // TODO: Use a lock background instead of a pink line
         Point lock_center = new Point();
         getWindowManager().getDefaultDisplay().getRealSize(lock_center);
-        lock = new Lock(mSensorManager, (ImageView) findViewById(R.id.pink_line),lock_center,(FloatingActionButton)findViewById(R.id.fab));
+        lock = new Lock(mSensorManager, (ImageView) findViewById(R.id.pink_line),lock_center);
 
         mVibration = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
@@ -67,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 update.postDelayed(this,update_delay);
             }
         }, update_delay);
+        closeToolBox();
     }
 
     @Override
@@ -93,12 +92,42 @@ public class MainActivity extends AppCompatActivity {
      */
     public void toolboxTap(View view) {
         if (!toolbox_open){
-            Toast.makeText(this,"Opening the toolbox", Toast.LENGTH_SHORT).show();
-            toolbox_open = TOOLBOX_OPEN;
+            openToolBox();
         } else {
-            Toast.makeText(this,"Closing the toolbox", Toast.LENGTH_SHORT).show();
-            toolbox_open = TOOLBOX_CLOSED;
+            closeToolBox();
         }
+    }
+
+    /**
+     * These things happen when the toolbox opens
+     */
+    private void openToolBox() {
+        //Toast.makeText(this,"Opening the toolbox", Toast.LENGTH_SHORT).show();
+        toolbox_open = TOOLBOX_OPEN;
+        ((FloatingActionButton) findViewById(R.id.settings)).show();
+        findViewById(R.id.settings).setClickable(true);
+    }
+
+    /**
+     * These things happen when the toolbox closes
+     */
+    private void closeToolBox() {
+        //Toast.makeText(this,"Closing the toolbox", Toast.LENGTH_SHORT).show();
+        toolbox_open = TOOLBOX_CLOSED;
+        ((FloatingActionButton) findViewById(R.id.settings)).hide();
+        findViewById(R.id.settings).setClickable(false);
+    }
+
+    private void hideToolBox(){
+        toolbox_open = TOOLBOX_CLOSED;
+        ((FloatingActionButton) findViewById(R.id.fab)).hide();
+        findViewById(R.id.fab).setClickable(false);
+    }
+
+    private void showToolBox(){
+        toolbox_open = TOOLBOX_CLOSED;
+        ((FloatingActionButton) findViewById(R.id.fab)).show();
+        findViewById(R.id.fab).setClickable(true);
     }
 
     /**
@@ -107,15 +136,30 @@ public class MainActivity extends AppCompatActivity {
      */
     public void backgroundTap(View view) {
         if (toolbox_open){
-            Toast.makeText(this,"Closing the toolbox", Toast.LENGTH_SHORT).show();
-            toolbox_open = TOOLBOX_CLOSED;
+            closeToolBox();
         }
+    }
+
+    // When the settings button is tapped then switch to the settings view
+    public void onSettingsTap(View view) {
+        Intent intent = new Intent(this,SettingsActivity.class);
+        startActivity(intent);
     }
 
     /**
      * Tasks that will run every 1/60th of a second
      */
     private void Update() {
+        // Closes the toolbox if it turns
+        if (lock.toolbox_on && !toolbox_open) {
+            showToolBox();
+        } else if (!lock.toolbox_on && toolbox_open){
+            closeToolBox();
+            hideToolBox();
+        } else if (!lock.toolbox_on){
+            hideToolBox();
+        }
+
         // Finds collisions between all images in lock
         List<ImageView> hard_collisions = lock.getImages();
         Rect pick_rect = new Rect();
